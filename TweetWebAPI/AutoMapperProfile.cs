@@ -13,6 +13,12 @@ namespace TweetWebAPI
 
             CreateMap<Tweet, TweetDto>();
             CreateMap<TweetDto, Tweet>();
+
+            CreateMap<User, TweetUserDto>();
+            CreateMap<TweetUserDto, User>();
+
+            CreateMap<Tweet, GetTweetDto>();
+            CreateMap<GetTweetDto, Tweet>();
         }
     }
 }

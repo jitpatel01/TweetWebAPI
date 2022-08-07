@@ -1,6 +1,6 @@
 ﻿namespace TweetWebAPI.Dtos
 {
-    public class TweetDto
+    public class UpdateTweetDto
     {
         public int Id { get; set; }
 

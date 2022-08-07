@@ -33,17 +33,46 @@ namespace TweetWebAPI.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("Likes")
+                        .HasColumnType("int");
+
                     b.Property<string>("Message")
                         .IsRequired()
                         .HasMaxLength(144)
                         .HasColumnType("nvarchar(144)");
+
+                    b.Property<int?>("ParentTweetId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Tag")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int?>("TweetId")
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentTweetId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Tweets");
+                });
+
+            modelBuilder.Entity("TweetWebAPI.Models.TweetLike", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("TweetId")
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
@@ -53,9 +82,7 @@ namespace TweetWebAPI.Migrations
 
                     b.HasIndex("TweetId");
 
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Tweets");
+                    b.ToTable("TweetLikes");
                 });
 
             modelBuilder.Entity("TweetWebAPI.Models.User", b =>
@@ -68,23 +95,28 @@ namespace TweetWebAPI.Migrations
 
                     b.Property<string>("ContactNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("LoginId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<byte[]>("PasswordHash")
                         .IsRequired()
@@ -101,9 +133,9 @@ namespace TweetWebAPI.Migrations
 
             modelBuilder.Entity("TweetWebAPI.Models.Tweet", b =>
                 {
-                    b.HasOne("TweetWebAPI.Models.Tweet", null)
-                        .WithMany("Tweets")
-                        .HasForeignKey("TweetId");
+                    b.HasOne("TweetWebAPI.Models.Tweet", "ParentTweet")
+                        .WithMany()
+                        .HasForeignKey("ParentTweetId");
 
                     b.HasOne("TweetWebAPI.Models.User", "User")
                         .WithMany("Tweets")
@@ -111,12 +143,25 @@ namespace TweetWebAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("ParentTweet");
+
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TweetWebAPI.Models.TweetLike", b =>
+                {
+                    b.HasOne("TweetWebAPI.Models.Tweet", "Tweet")
+                        .WithMany("TweetLike")
+                        .HasForeignKey("TweetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tweet");
                 });
 
             modelBuilder.Entity("TweetWebAPI.Models.Tweet", b =>
                 {
-                    b.Navigation("Tweets");
+                    b.Navigation("TweetLike");
                 });
 
             modelBuilder.Entity("TweetWebAPI.Models.User", b =>

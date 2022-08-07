@@ -18,6 +18,8 @@ builder.Services.AddDbContextPool<TweetContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DbConnectionString"));
 });
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ITweetService, TweetService>();
+builder.Services.AddScoped<ITweetLikeService, TweetLikeService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
