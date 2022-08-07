@@ -29,6 +29,17 @@ namespace TweetWebAPI.Controllers
             return Ok(response);
         }
 
+        [HttpGet("/api/v1.0/tweets/{userName}/all")]
+        public async Task<IActionResult> Get(string userName)
+        {
+            var response = await this.tweetService.GetTweets(userName);
+            if (!response.Success)
+            {
+                return BadRequest(response);
+            }
+            return Ok(response);
+        }
+
         [HttpPost("/api/v1.0/tweets/{userName}/add")]
         public async Task<IActionResult> Add(string userName, TweetDto tweetDto)
         {

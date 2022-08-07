@@ -26,6 +26,34 @@ namespace TweetWebAPI.Services
             return response;
         }
 
+        public async Task<ServiceResponse<List<GetTweetDto>>> GetTweets(string userName)
+        {
+            ServiceResponse<List<GetTweetDto>> response = new ServiceResponse<List<GetTweetDto>>();
+            if (string.IsNullOrEmpty(userName))
+            {
+                response.Success = false;
+                response.Message = "User name is required.";
+            }
+            else
+            {
+                var user = dataContext.Users.FirstOrDefault(x => x.LoginId.ToLower() == userName.ToLower());
+
+                if (user == null)
+                {
+                    response.Success = false;
+                    response.Message = "User not exists.";
+                }
+                else
+                {
+                    var tweets = dataContext.Tweets.Where(x=>x.User.Id == user.Id).Include(x => x.User).ToList();
+                    response.Success = true;
+                    response.Data = this.mapper.Map<List<GetTweetDto>>(tweets);
+                }
+            }
+
+            return response;
+        }
+
         public async Task<ServiceResponse<int>> AddTweet(TweetDto tweetDto, string userName)
         {
             ServiceResponse<int> response = new ServiceResponse<int>();

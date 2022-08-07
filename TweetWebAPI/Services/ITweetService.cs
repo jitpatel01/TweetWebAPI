@@ -13,5 +13,7 @@ namespace TweetWebAPI.Services
         Task<ServiceResponse<int>> DeleteTweet(int tweetId, string userName);
 
         Task<ServiceResponse<List<GetTweetDto>>> GetTweets();
+
+        Task<ServiceResponse<List<GetTweetDto>>> GetTweets(string userName);
     }
 }
